@@ -5,7 +5,7 @@ import br.com.testsusecase.tests.dto.request.UserRequestDto;
 import br.com.testsusecase.tests.dto.response.UserResponseDto;
 import br.com.testsusecase.tests.factories.UserFactory;
 import br.com.testsusecase.tests.repository.UserRepository;
-import br.com.testsusecase.tests.repository.UserRepositoryTest;
+
 import br.com.testsusecase.tests.services.exceptions.ResourceAlreadyExistsException;
 import br.com.testsusecase.tests.services.exceptions.ResourceNotFoundException;
 
