@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
   private final ModelMapper modelMapper;
+
   @Override
   @Transactional(readOnly = true)
   public UserResponseDto findUserById(Long id) {
