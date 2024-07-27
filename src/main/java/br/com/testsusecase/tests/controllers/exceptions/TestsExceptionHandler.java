@@ -24,7 +24,7 @@ public class TestsExceptionHandler {
                                                             HttpServletRequest request){
     StandardError standardError = makeStandardError("Entity not found!",
             HttpStatus.NOT_FOUND.value(), request.getRequestURI(), exception.getMessage() , new ArrayList<>());
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError);
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(standardError);
   }
 
   @ExceptionHandler(ResourceAlreadyExistsException.class)

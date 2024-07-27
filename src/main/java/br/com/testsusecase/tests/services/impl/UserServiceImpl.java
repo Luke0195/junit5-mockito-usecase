@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
+
 import java.util.Optional;
 
 
@@ -51,10 +51,9 @@ public class UserServiceImpl implements UserService {
   return mapUserToUserResponseDto(user);
   }
 
-  @Transactional
+
   public UserResponseDto update(Long id, UserRequestDto userRequestDto) {
-    User user = userRepository.getReferenceById(id);
-    if (Objects.isNull(user.getId())) throw new ResourceNotFoundException("User id not found");
+    User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("user id not found"));
     user.setEmail(userRequestDto.getEmail());
     user.setName((userRequestDto.getName()));
     user.setPassword(userRequestDto.getPassword());
@@ -62,14 +61,16 @@ public class UserServiceImpl implements UserService {
     return mapUserToUserResponseDto(user);
   }
 
+  @Override
+  public void delete(Long id) {
+   User findUserByID = userRepository.findById(id).orElseThrow(()  -> new ResourceNotFoundException("id not found!"));
+   userRepository.deleteById(findUserByID.getId());
+  }
 
   private static UserResponseDto mapUserToUserResponseDto(User entity){
     return new UserResponseDto(entity.getId(), entity.getName(), entity.getEmail(),
             entity.getPassword(), entity.getCreatedAt(), entity.getUpdatedAt());
   }
 
-  @Override
-  public void delete(Long id) {
-   userRepository.deleteById(id);
-  }
+
 }

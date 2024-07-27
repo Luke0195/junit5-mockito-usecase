@@ -5,10 +5,10 @@ import br.com.testsusecase.tests.dto.request.UserRequestDto;
 import br.com.testsusecase.tests.dto.response.UserResponseDto;
 import br.com.testsusecase.tests.factories.UserFactory;
 import br.com.testsusecase.tests.repository.UserRepository;
+import br.com.testsusecase.tests.repository.UserRepositoryTest;
 import br.com.testsusecase.tests.services.exceptions.ResourceAlreadyExistsException;
 import br.com.testsusecase.tests.services.exceptions.ResourceNotFoundException;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.hibernate.ResourceClosedException;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -53,20 +52,21 @@ class UserServiceImplTest {
     void setup(){
       //  MockitoAnnotations.openMocks(this);
         this.setupValues();
+
+
     }
 
     @Test
-    @DisplayName("should throw resource not found when invalid user id is provided")
+    @DisplayName("Should throw resource not found when invalid user id is provided")
     void shouldThrowsResourceNotFoundExceptionWhenInvalidIdIsProvided(){
-
-        Mockito.when(userRepository.findUserById(this.nonExistingId)).thenThrow(ResourceNotFoundException.class);
+     //   Mockito.when(userRepository.findUserById(this.nonExistingId)).thenThrow(ResourceNotFoundException.class);
         Assertions.assertThrows(ResourceNotFoundException.class, () -> {
                 this.userService.findUserById(this.nonExistingId);
         });
     }
 
     @Test
-    @DisplayName("should return a user when valid id is provided")
+    @DisplayName("Should return a user when valid id is provided")
     void shouldReturnUserWhenValidIdIsProvided(){
         Mockito.when(userRepository.findById(1L)).thenReturn(this.optionalUser);
         UserResponseDto user = userService.findUserById(1L);
@@ -79,7 +79,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("should return all users when findall is called")
+    @DisplayName("Should return all users when findall is called")
     void shouldReturnAllUsersWhenFindAllUsersIsCalled(){
         Mockito.when(userRepository.findAll()).thenReturn(List.of(user));
         List<UserResponseDto> response = userService.findAllUsers();
@@ -110,8 +110,36 @@ class UserServiceImplTest {
     }
 
 
+    @Test
+    @DisplayName("Should update user when valid data is provided")
+    void shouldUpdatedAnUserWhenValidDataIsProvided(){
+        Mockito.when(userRepository.findById(this.existingId)).thenReturn(this.optionalUser);
+        Mockito.when(userRepository.save(Mockito.any())).thenReturn(user);
+        UserResponseDto response = userService.update(this.existingId ,new UserRequestDto("any_user","any_user@mail.com","123"));
+        Assertions.assertNotNull(response);
+    }
+
+    @Test
+    @DisplayName("Should delete an user when valid id is provided")
+    void shouldDeleteAnUserWhenValidIdIsProvided(){
+        Mockito.when(userRepository.findById(this.existingId)).thenReturn(Optional.of(user));
+        Mockito.doNothing().when(userRepository).deleteById(this.existingId);
+        userService.delete(this.existingId);
+        Mockito.verify(userRepository, Mockito.times(1)).deleteById(this.existingId);
+    }
+
+    @Test
+    @DisplayName("Should throws Resource not found exception when invalid id is provided")
+    void shouldThrowsResourceNotFoundExceptionWhenDeleteByIdProvidedInvalidId(){
+        Mockito.when(userRepository.findById(this.nonExistingId)).thenThrow(ResourceNotFoundException.class);
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+         userService.delete(this.nonExistingId);
+        });
+
+    }
+
     private  void setupValues(){
-        this.existingId = 3L;
+        this.existingId = 1L;
         this.nonExistingId = 9000L;
         this.userRequestDto = UserFactory.makeUserRequestDto();
         this.user = UserFactory.makeUser(userRequestDto);

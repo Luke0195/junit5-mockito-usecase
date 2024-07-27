@@ -1,0 +1,1 @@
+INSERT INTO USERS(name, email, password)VALUES('any_name','any_email@mail.com', 'any_password');

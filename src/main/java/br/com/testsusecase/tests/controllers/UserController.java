@@ -45,7 +45,7 @@ public class UserController {
      return ResponseEntity.created(uri).body(response);
   }
 
-  @PutMapping(value = PATHID)
+  @PutMapping(value = "/{id}")
   public ResponseEntity<UserResponseDto> update(@PathVariable Long id, @RequestBody UserRequestDto requestDto){
     UserResponseDto response = userServiceImpl.update(id, requestDto);
     return ResponseEntity.status(HttpStatus.OK).body(response);
