@@ -1,6 +1,7 @@
 package br.com.testsusecase.tests.services.impl;
 
 import br.com.testsusecase.tests.dto.request.UserRequestDto;
+import br.com.testsusecase.tests.services.exceptions.ResourceAlreadyExistsException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,7 +42,16 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public UserResponseDto create(UserRequestDto requestDto) {
-    User createdUser = userRepository.save(modelMapper.map(requestDto, User.class));
-    return modelMapper.map(createdUser, UserResponseDto.class);
+  Optional<User> findUserByEmail = userRepository.findByEmail(requestDto.email());
+  if(findUserByEmail.isPresent()) throw new ResourceAlreadyExistsException("This e-mail is already taken!");
+  User user = User.builder().name(requestDto.name()).email(requestDto.email()).password(requestDto.password()).build();
+  user = userRepository.save(user);
+  return mapUserToUserResponseDto(user);
   }
+
+  private static UserResponseDto mapUserToUserResponseDto(User entity){
+    return new UserResponseDto(entity.getId(), entity.getName(), entity.getEmail(),
+            entity.getPassword(), entity.getCreatedAt(), entity.getUpdatedAt());
+  }
+
 }
