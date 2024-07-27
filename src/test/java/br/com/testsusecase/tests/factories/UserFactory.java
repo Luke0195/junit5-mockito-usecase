@@ -16,7 +16,7 @@ public class UserFactory {
 
     public static User makeUser(UserRequestDto userRequestDto){
         return User.builder()
-                .id(3L)
+                .id(1L)
                 .name(userRequestDto.getName())
                 .email(userRequestDto.getEmail())
                 .password(userRequestDto.getPassword())
