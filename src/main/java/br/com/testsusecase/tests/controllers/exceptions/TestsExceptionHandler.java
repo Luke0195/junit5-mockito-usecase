@@ -23,7 +23,6 @@ public class TestsExceptionHandler {
     StandardError standardError = makeStandardError("Entity not found!",
             HttpStatus.NOT_FOUND.value(), request.getRequestURI(), exception.getMessage() , new ArrayList<>());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError);
-
   }
 
   @ExceptionHandler(ResourceAlreadyExistsException.class)
@@ -46,7 +45,5 @@ public class TestsExceptionHandler {
             .fieldErrors(errors)
             .build();
   }
-
-
 
 }
