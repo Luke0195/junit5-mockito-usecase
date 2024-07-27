@@ -15,12 +15,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
+
 
   private final UserRepository userRepository;
   private final ModelMapper modelMapper;
@@ -48,9 +50,25 @@ public class UserServiceImpl implements UserService {
   return mapUserToUserResponseDto(user);
   }
 
+  @Transactional
+  public UserResponseDto update(Long id, UserRequestDto userRequestDto) {
+    User user = userRepository.getReferenceById(id);
+    if (Objects.isNull(user.getId())) throw new ResourceNotFoundException("User id not found");
+    user.setEmail(userRequestDto.getEmail());
+    user.setName((userRequestDto.getName()));
+    user.setPassword(userRequestDto.getPassword());
+    user = userRepository.save(user);
+    return mapUserToUserResponseDto(user);
+  }
+
+
   private static UserResponseDto mapUserToUserResponseDto(User entity){
     return new UserResponseDto(entity.getId(), entity.getName(), entity.getEmail(),
             entity.getPassword(), entity.getCreatedAt(), entity.getUpdatedAt());
   }
 
+  @Override
+  public void delete(Long id) {
+   userRepository.deleteById(id);
+  }
 }
