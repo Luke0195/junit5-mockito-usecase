@@ -1,6 +1,6 @@
 package br.com.testsusecase.tests.controllers.exceptions;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.*;
 
 @AllArgsConstructor
@@ -9,9 +9,6 @@ import lombok.*;
 @Setter
 @Builder
 public class FieldError {
-
-    @JsonProperty("field_name")
-    private String fieldName;
-    @JsonProperty("field_description")
-    private String fieldDescription;
+    private String name;
+    private String description;
 }

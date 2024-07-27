@@ -2,22 +2,22 @@ package br.com.testsusecase.tests.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.*;
 
-public record UserRequestDto(String name, String email, String password) {
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
+public class UserRequestDto {
   @NotEmpty(message = "The field name must be required")
-  public String name() {
-    return name;
-  }
+  private String name;
 
   @NotEmpty(message = "The field name must be required")
   @Email(message = "Please provided a valid e-mail")
-  public String email() {
-    return email;
-  }
+  private String email;
 
   @NotEmpty(message = "The field password must be required")
-  public String password() {
-    return password;
-  }
+  private String password;
 
 }

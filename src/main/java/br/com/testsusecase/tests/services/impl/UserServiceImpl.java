@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 @AllArgsConstructor
@@ -28,8 +28,7 @@ public class UserServiceImpl implements UserService {
   @Transactional(readOnly = true)
   public UserResponseDto findUserById(Long id) {
     User entity = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("user id not found!"));
-    UserResponseDto response = new UserResponseDto(entity.getId(), entity.getName(), entity.getEmail(), entity.getPassword(), entity.getCreatedAt(), entity.getUpdatedAt());
-    return response;
+    return  mapUserToUserResponseDto(entity);
   }
 
   @Override
@@ -42,9 +41,9 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public UserResponseDto create(UserRequestDto requestDto) {
-  Optional<User> findUserByEmail = userRepository.findByEmail(requestDto.email());
+  Optional<User> findUserByEmail = userRepository.findByEmail(requestDto.getEmail());
   if(findUserByEmail.isPresent()) throw new ResourceAlreadyExistsException("This e-mail is already taken!");
-  User user = User.builder().name(requestDto.name()).email(requestDto.email()).password(requestDto.password()).build();
+  User user = User.builder().name(requestDto.getName()).email(requestDto.getEmail()).password(requestDto.getPassword()).build();
   user = userRepository.save(user);
   return mapUserToUserResponseDto(user);
   }
