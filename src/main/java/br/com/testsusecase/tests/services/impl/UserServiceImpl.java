@@ -1,5 +1,6 @@
 package br.com.testsusecase.tests.services.impl;
 
+import br.com.testsusecase.tests.dto.request.UserRequestDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   private final ModelMapper modelMapper;
   @Override
-  @org.springframework.transaction.annotation.Transactional(readOnly = true)
+  @Transactional(readOnly = true)
   public UserResponseDto findUserById(Long id) {
     User entity = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("user id not found!"));
     UserResponseDto response = new UserResponseDto(entity.getId(), entity.getName(), entity.getEmail(), entity.getPassword(), entity.getCreatedAt(), entity.getUpdatedAt());
@@ -34,5 +35,12 @@ public class UserServiceImpl implements UserService {
   public List<UserResponseDto> findAllUsers() {
     List<User> users = userRepository.findAll();
     return users.stream().map(x ->  new UserResponseDto(x.getId(), x.getName(), x.getEmail(), x.getPassword(), x.getCreatedAt(), x.getUpdatedAt())).toList();
+  }
+
+  @Override
+  @Transactional
+  public UserResponseDto create(UserRequestDto requestDto) {
+    User createdUser = userRepository.save(modelMapper.map(requestDto, User.class));
+    return modelMapper.map(createdUser, UserResponseDto.class);
   }
 }
