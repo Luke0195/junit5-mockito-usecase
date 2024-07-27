@@ -1,5 +1,6 @@
 package br.com.testsusecase.tests.services.impl;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import br.com.testsusecase.tests.domain.User;
@@ -9,13 +10,17 @@ import br.com.testsusecase.tests.services.UserService;
 import br.com.testsusecase.tests.services.exceptions.ResourceNotFoundException;
 
 import lombok.AllArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
-
+  private final ModelMapper modelMapper;
   @Override
   @org.springframework.transaction.annotation.Transactional(readOnly = true)
   public UserResponseDto findUserById(Long id) {
@@ -23,6 +28,11 @@ public class UserServiceImpl implements UserService {
     UserResponseDto response = new UserResponseDto(entity.getId(), entity.getName(), entity.getEmail(), entity.getPassword(), entity.getCreatedAt(), entity.getUpdatedAt());
     return response;
   }
-  
-  
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<UserResponseDto> findAllUsers() {
+    List<User> users = userRepository.findAll();
+    return users.stream().map(x ->  new UserResponseDto(x.getId(), x.getName(), x.getEmail(), x.getPassword(), x.getCreatedAt(), x.getUpdatedAt())).toList();
+  }
 }

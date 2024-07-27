@@ -1,5 +1,7 @@
 package br.com.testsusecase.tests.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalDateTime;
 
 public record UserResponseDto(Long id, String name, String email, String password, LocalDateTime createdAt, LocalDateTime updatedAt) {
@@ -15,7 +17,7 @@ public record UserResponseDto(Long id, String name, String email, String passwor
   public String email() {
     return email;
   }
-
+  @JsonIgnore
   public String password() {
     return password;
   }
