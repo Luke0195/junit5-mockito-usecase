@@ -38,7 +38,7 @@ jobs:
       with:
        path: ~/.m2
       # An explicit key for restoring and saving the cache
-       key: ${{ runner.os }}-maven-${{ hasFiles('./pom.xml') }}
+       key: ${{ runner.os }}-maven-
       # An order list of keys to use for restoring stale cache if no cache hit occurred for key. Note `cache-hit` returns false in this case.
        restore-keys: ${{runner.os}}-maven-
       # The chunk size used to split up large files during upload, in bytes
